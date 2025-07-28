@@ -14,6 +14,7 @@ import Image from 'next/image'
 import { Compass, GalleryHorizontalEnd, LogIn, Search } from 'lucide-react'
 import { usePathname } from 'next/navigation'
 import { Button } from '@/components/ui/button'
+import { SignOutButton, SignUp, SignUpButton, UserButton, useUser } from '@clerk/nextjs'
 
 const MenuOptions = [
     {
@@ -34,13 +35,14 @@ const MenuOptions = [
     {
         name: 'Sign In',
         icon: LogIn,
-        path: '#'
+        path: '/sign-in'
     }
 
 ]
 
 function AppSidebar() {
-    const path=usePathname();
+    const path = usePathname();
+    const { user } =  useUser();
     return (
         <Sidebar className='bg-accent'>
             <SidebarHeader className='bg-accent flex items-centre py-5'>
@@ -52,8 +54,8 @@ function AppSidebar() {
                         <SidebarMenu>
                             {MenuOptions.map((menu, index) => (
                                 <SidebarMenuItem key={index}>
-                                    <SidebarMenuButton asChild 
-                                    className={`p-5 py-6 hover:font-bold
+                                    <SidebarMenuButton asChild
+                                        className={`p-5 py-6 hover:font-bold
                                         ${path?.includes(menu.path) && 'font-bold'}`}>
                                         <a href={menu.path} className={''}>
                                             <menu.icon className={'h-8 w-8 hover:font-bold'} />
@@ -63,15 +65,22 @@ function AppSidebar() {
                                 </SidebarMenuItem>
                             ))}
                         </SidebarMenu>
-                        <Button className={'rounded-full mx-5 mt-4'}>Sign Up</Button>
+
+                        {!user? <SignUpButton mode='modal'>
+                            <Button className={'rounded-full mx-5 mt-4'}>Sign Up</Button>
+                        </SignUpButton>:
+                        <SignOutButton>
+                            <Button className={'rounded-full mx-5 mt-4'}>Log Out</Button>
+                        </SignOutButton>}
                     </SidebarContent>
                 </SidebarGroup>
             </SidebarContent>
             <SidebarFooter className={'bg-accent'}>
-                <div className={'p-3'} >
+                <div className={'p-3 flex flex-col'} >
                     <h2 className={'font-bold text-gray-500'}>Try Pro</h2>
                     <p className={'text-gray-400'} >Upgrade for image Upload, smarter AI, and more Copilot.</p>
-                    <Button variant={'secondary'} className={'text-gray-500'} >Learn More</Button>
+                    <Button variant={'secondary'} className={'text-gray-500 mb-3'} >Learn More</Button>
+                    <UserButton className={'mt-4 mb-4'} />
                 </div>
             </SidebarFooter>
         </Sidebar>
