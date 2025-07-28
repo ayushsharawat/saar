@@ -24,17 +24,17 @@ const MenuOptions = [
     {
         name: 'Discover',
         icon: Compass,
-        href: '/discover'
+        path: '/discover'
     },
     {
         name: 'Library',
         icon: GalleryHorizontalEnd,
-        href: '/library'
+        path: '/library'
     },
     {
         name: 'Sign In',
         icon: LogIn,
-        href: '#'
+        path: '#'
     }
 
 ]
@@ -55,8 +55,8 @@ function AppSidebar() {
                                     <SidebarMenuButton asChild 
                                     className={`p-5 py-6 hover:font-bold
                                         ${path?.includes(menu.path) && 'font-bold'}`}>
-                                        <a href={menu.path}className={''}>
-                                            <menu.icon className={'h-8 w-8 hover:icon-bold'} />
+                                        <a href={menu.path} className={''}>
+                                            <menu.icon className={'h-8 w-8 hover:font-bold'} />
                                             <span className={'text-lg'}>{menu.name}</span>
                                         </a>
                                     </SidebarMenuButton>
@@ -65,13 +65,13 @@ function AppSidebar() {
                         </SidebarMenu>
                         <Button className={'rounded-full mx-5 mt-4'}>Sign Up</Button>
                     </SidebarContent>
-                </ SidebarGroup >
+                </SidebarGroup>
             </SidebarContent>
             <SidebarFooter className={'bg-accent'}>
                 <div className={'p-3'} >
                     <h2 className={'font-bold text-gray-500'}>Try Pro</h2>
                     <p className={'text-gray-400'} >Upgrade for image Upload, smarter AI, and more Copilot.</p>
-                    <Button variant={'secondary'} className={'Text-gray-500'} >Learn More</Button>
+                    <Button variant={'secondary'} className={'text-gray-500'} >Learn More</Button>
                 </div>
             </SidebarFooter>
         </Sidebar>

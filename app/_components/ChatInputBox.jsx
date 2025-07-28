@@ -1,9 +1,14 @@
+'use client'
+import Image from 'next/image'
 import React from 'react'
 
-function ChatInputBox() {
+export default function ChatInputBox() {
   return (
-    <div>ChatInputBox</div>
+    <div className=" h-screen flex items-center justify-center w-full">
+      <Image src="/logoname.png" alt="logo" height={300} width={300} />
+      <div>
+        
+      </div>
+    </div>
   )
 }
-
-export default ChatInputBox
