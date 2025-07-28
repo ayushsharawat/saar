@@ -1,3 +1,4 @@
+'use client'
 import React from 'react'
 import {
     Sidebar,
@@ -11,6 +12,8 @@ import {
 } from "@/components/ui/sidebar"
 import Image from 'next/image'
 import { Compass, GalleryHorizontalEnd, LogIn, Search } from 'lucide-react'
+import { usePathname } from 'next/navigation'
+import { Button } from '@/components/ui/button'
 
 const MenuOptions = [
     {
@@ -37,6 +40,7 @@ const MenuOptions = [
 ]
 
 function AppSidebar() {
+    const path=usePathname();
     return (
         <Sidebar className='bg-accent'>
             <SidebarHeader className='bg-accent flex items-centre py-5'>
@@ -48,7 +52,9 @@ function AppSidebar() {
                         <SidebarMenu>
                             {MenuOptions.map((menu, index) => (
                                 <SidebarMenuItem key={index}>
-                                    <SidebarMenuButton asChild className={'p-5 py-6 hover:font-bold'}>
+                                    <SidebarMenuButton asChild 
+                                    className={`p-5 py-6 hover:font-bold
+                                        ${path?.includes(menu.path) && 'font-bold'}`}>
                                         <a href={menu.path}className={''}>
                                             <menu.icon className={'h-8 w-8 hover:icon-bold'} />
                                             <span className={'text-lg'}>{menu.name}</span>
@@ -57,10 +63,17 @@ function AppSidebar() {
                                 </SidebarMenuItem>
                             ))}
                         </SidebarMenu>
+                        <Button className={'rounded-full mx-5 mt-4'}>Sign Up</Button>
                     </SidebarContent>
                 </ SidebarGroup >
             </SidebarContent>
-            <SidebarFooter />
+            <SidebarFooter className={'bg-accent'}>
+                <div className={'p-3'} >
+                    <h2 className={'font-bold text-gray-500'}>Try Pro</h2>
+                    <p className={'text-gray-400'} >Upgrade for image Upload, smarter AI, and more Copilot.</p>
+                    <Button variant={'secondary'} className={'Text-gray-500'} >Learn More</Button>
+                </div>
+            </SidebarFooter>
         </Sidebar>
     )
 }
