@@ -14,21 +14,29 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { AIModelsOptions } from '@/Services/Shared'
 import { supabase } from '@/Services/supabase'
+import { useUser } from '@clerk/nextjs'
 
 export default function ChatInputBox() {
-
-  const [userSearchInput, setUserSerarchInput] = useState();
+  const { user } = useUser();
+  const [userSearchInput, setUserSearchInput] = useState('');
   const [searchType, setSearchType] = useState('search')
-  const onSearchQuery = async () => {
-    const result = await supabase.from('Library').insert([
-      {
-        searchInput: userSearchInput,
-        userEmail: user?.primaryEmailAddress?.emailAddress,
-        type: searchType
-      }
-    ]).select();
 
-    console.log(result);
+  const onSearchQuery = async () => {
+    if (!userSearchInput || !user) return;
+    
+    try {
+      const result = await supabase.from('Library').insert([
+        {
+          searchInput: userSearchInput,
+          userEmail: user?.primaryEmailAddress?.emailAddress,
+          type: searchType
+        }
+      ]).select();
+
+      console.log(result);
+    } catch (error) {
+      console.error('Error saving search:', error);
+    }
   }
 
   return (
@@ -38,10 +46,10 @@ export default function ChatInputBox() {
         <div className='flex items-end justify-between'>
           <Tabs defaultValue="Search" className="w-[400px]">
             <TabsContent value="Search"><input type="text" placeholder="Ask Anything"
-              onChange={(e) => setUserSerarchInput(e.target.value)}
+              onChange={(e) => setUserSearchInput(e.target.value)}
               className='w-full p-4 outline-none' /></TabsContent>
             <TabsContent value="Research"><input type="text" placeholder="Research Anything"
-              onChange={(e) => setUserSerarchInput(e.target.value)}
+              onChange={(e) => setUserSearchInput(e.target.value)}
               className='w-full p-4 outline-none' /></TabsContent>
             <TabsList>
               <TabsTrigger value="Search" className='text-primary' onClick={() => setSearchType('search')}> <SearchCheck /> Search</TabsTrigger>
@@ -52,9 +60,11 @@ export default function ChatInputBox() {
           <div className='flex gap-0 items-center'>
 
             <DropdownMenu>
-              <DropdownMenuTrigger><Button variant={'ghost'}>
-                <Cpu className={'text-gray-500 h-5 w-5'} />
-              </Button></DropdownMenuTrigger>
+              <DropdownMenuTrigger asChild>
+                <Button variant={'ghost'}>
+                  <Cpu className={'text-gray-500 h-5 w-5'} />
+                </Button>
+              </DropdownMenuTrigger>
               <DropdownMenuContent>
                 {/* <DropdownMenuLabel>My Account</DropdownMenuLabel>
                 <DropdownMenuSeparator /> */}
@@ -77,9 +87,11 @@ export default function ChatInputBox() {
             <Button variant={'ghost'}>
               <Mic className={'text-gray-500 h-5 w-5'} />
             </Button>
-            <Button>
-              {!userSearchInput?<AudioLines className={'text-white h-5 w-5'} />
-              :<ArrowRight className={'text-white h-5 w-5'}/>} 
+            <Button onClick={() => {
+              userSearchInput ? onSearchQuery() : null
+            }}>
+              {!userSearchInput ? <AudioLines className={'text-white h-5 w-5'} />
+                : <ArrowRight className={'text-white h-5 w-5'} />}
             </Button>
           </div>
         </div>

@@ -33,8 +33,16 @@ export const UserDetailProvider = ({ children }) => {
           .eq('email', user?.primaryEmailAddress?.emailAddress)
           .single();
 
-        if (error && error.code !== 'PGRST116') {
-          console.error('Error fetching user data:', error);
+        if (error) {
+          // Log the full error object and query params for debugging
+          console.error('Error fetching user data:', error, {
+            table: 'Users',
+            email: user?.primaryEmailAddress?.emailAddress
+          });
+          // If the error is about missing table or column, show a clear warning
+          if (error.message && (error.message.includes('relation') || error.message.includes('column'))) {
+            console.warn('Supabase table "Users" or column "email" does not exist. Please check your database schema.');
+          }
         }
 
         setUserData(data);
