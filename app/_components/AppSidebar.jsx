@@ -15,6 +15,7 @@ import { Compass, GalleryHorizontalEnd, LogIn, Search } from 'lucide-react'
 import { usePathname } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { SignOutButton, SignUp, SignUpButton, UserButton, useUser } from '@clerk/nextjs'
+import Link from 'next/link'
 
 const MenuOptions = [
     {
@@ -31,13 +32,7 @@ const MenuOptions = [
         name: 'Library',
         icon: GalleryHorizontalEnd,
         path: '/library'
-    },
-    {
-        name: 'Sign In',
-        icon: LogIn,
-        path: '/sign-in'
     }
-
 ]
 
 function AppSidebar() {
@@ -57,21 +52,41 @@ function AppSidebar() {
                                     <SidebarMenuButton asChild
                                         className={`p-5 py-6 hover:font-bold
                                         ${path?.includes(menu.path) && 'font-bold'}`}>
-                                        <a href={menu.path} className={''}>
+                                        <Link href={menu.path} className={''}>
                                             <menu.icon className={'h-8 w-8 hover:font-bold'} />
                                             <span className={'text-lg'}>{menu.name}</span>
-                                        </a>
+                                        </Link>
                                     </SidebarMenuButton>
                                 </SidebarMenuItem>
                             ))}
+                            
+                            {!user && (
+                                <SidebarMenuItem>
+                                    <SidebarMenuButton asChild
+                                        className={`p-5 py-6 hover:font-bold
+                                        ${path?.includes('/sign-in') && 'font-bold'}`}>
+                                        <Link href="/sign-in" className={''}>
+                                            <LogIn className={'h-8 w-8 hover:font-bold'} />
+                                            <span className={'text-lg'}>Sign In</span>
+                                        </Link>
+                                    </SidebarMenuButton>
+                                </SidebarMenuItem>
+                            )}
                         </SidebarMenu>
 
-                        {!user? <SignUpButton mode='modal'>
-                            <Button className={'rounded-full mx-5 mt-4'}>Sign Up</Button>
-                        </SignUpButton>:
-                        <SignOutButton>
-                            <Button className={'rounded-full mx-5 mt-4'}>Log Out</Button>
-                        </SignOutButton>}
+                        {!user? (
+                            <div className="px-5 mt-4">
+                                <Link href="/sign-up">
+                                    <Button className={'rounded-full w-full'}>Sign Up</Button>
+                                </Link>
+                            </div>
+                        ) : (
+                            <div className="px-5 mt-4">
+                                <SignOutButton>
+                                    <Button className={'rounded-full w-full'}>Log Out</Button>
+                                </SignOutButton>
+                            </div>
+                        )}
                     </SidebarContent>
                 </SidebarGroup>
             </SidebarContent>
