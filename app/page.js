@@ -10,7 +10,7 @@ export default function Home() {
   
   if (!isClerkConfigured || !isSupabaseConfigured) {
     return (
-      <div className="flex-1 w-full flex items-center justify-center">
+      <div className="w-full flex items-center justify-center min-h-[calc(100vh-200px)]">
         <div className="text-center p-8">
           <h1 className="text-2xl font-bold text-red-600 mb-4">Configuration Required</h1>
           <p className="text-gray-600 mb-4">Environment variables are not configured.</p>
@@ -25,7 +25,7 @@ export default function Home() {
   }
 
   return (
-    <div className="flex-1 w-full">
+    <div className="w-full">
       <ChatInputBox />
       <LibraryDisplay />
     </div>

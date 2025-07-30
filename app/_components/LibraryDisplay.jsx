@@ -88,6 +88,9 @@ export default function LibraryDisplay() {
                 <div className="flex-1">
                   <p className="font-medium">{entry.searchInput}</p>
                   <p className="text-sm text-gray-600">Type: {entry.type}</p>
+                  {entry.aiModel && (
+                    <p className="text-sm text-gray-600">AI Model: {entry.aiModel}</p>
+                  )}
                   {entry.searchId && (
                     <p className="text-xs text-gray-500">Search ID: {entry.searchId}</p>
                   )}

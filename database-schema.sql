@@ -17,6 +17,8 @@ CREATE TABLE IF NOT EXISTS "Library" (
     userEmail TEXT NOT NULL,
     type TEXT NOT NULL,
     searchId TEXT,
+    searchResults JSONB,
+    aiModel TEXT,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
@@ -26,6 +28,8 @@ CREATE INDEX IF NOT EXISTS idx_users_email ON "Users"(email);
 CREATE INDEX IF NOT EXISTS idx_library_user_email ON "Library"(userEmail);
 CREATE INDEX IF NOT EXISTS idx_library_type ON "Library"(type);
 CREATE INDEX IF NOT EXISTS idx_library_search_id ON "Library"(searchId);
+CREATE INDEX IF NOT EXISTS idx_library_search_results ON "Library" USING GIN (searchResults);
+CREATE INDEX IF NOT EXISTS idx_library_ai_model ON "Library"(aiModel);
 
 -- Enable Row Level Security (RLS)
 ALTER TABLE "Users" ENABLE ROW LEVEL SECURITY;

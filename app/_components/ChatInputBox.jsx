@@ -21,6 +21,7 @@ export default function ChatInputBox() {
   const { user } = useUser();
   const [userSearchInput, setUserSearchInput] = useState('');
   const [searchType, setSearchType] = useState('search')
+  const [selectedModel, setSelectedModel] = useState(AIModelsOptions[0])
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
@@ -36,9 +37,10 @@ export default function ChatInputBox() {
       // Encode the query for URL safety
       const encodedQuery = encodeURIComponent(userSearchInput);
       const encodedType = encodeURIComponent(searchType);
+      const encodedModel = encodeURIComponent(selectedModel.name);
       
       // Redirect to search results page with query parameters
-      router.push(`/search/results?q=${encodedQuery}&type=${encodedType}`);
+      router.push(`/search/results?q=${encodedQuery}&type=${encodedType}&model=${encodedModel}`);
       
     } catch (error) {
       console.error('Error redirecting to search:', error);
@@ -52,8 +54,12 @@ export default function ChatInputBox() {
     }
   }
 
+  const handleModelSelect = (model) => {
+    setSelectedModel(model);
+  }
+
   return (
-    <div className=" h-screen flex flex-col items-center justify-center w-full">
+    <div className="min-h-[calc(100vh-200px)] flex flex-col items-center justify-center w-full py-8">
       <Image src="/logoname.png" alt="logo" height={300} width={300} />
       <div className="p-2 w-full max-w-2xl border rounded-2xl">
         <div className='flex items-end justify-between'>
@@ -90,16 +96,23 @@ export default function ChatInputBox() {
           <div className='flex gap-0 items-center'>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant={'ghost'}>
+                <Button variant={'ghost'} className="flex items-center gap-2">
                   <Cpu className={'text-gray-500 h-5 w-5'} />
+                  <span className="text-xs text-gray-500 hidden sm:inline">{selectedModel.name}</span>
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent>
+              <DropdownMenuContent className="w-64">
+                <DropdownMenuLabel>Select AI Model</DropdownMenuLabel>
+                <DropdownMenuSeparator />
                 {AIModelsOptions.map((model, index) => (
-                  <DropdownMenuItem key={index} className={'mb-1'}>
-                    <div>
-                      <h2 className='text-smaller'>{model.name}</h2>
-                      <p className='text-xs'>{model.desc}</p>
+                  <DropdownMenuItem 
+                    key={index} 
+                    className={`mb-1 cursor-pointer ${selectedModel.name === model.name ? 'bg-blue-50' : ''}`}
+                    onClick={() => handleModelSelect(model)}
+                  >
+                    <div className="w-full">
+                      <h3 className="font-medium text-sm">{model.name}</h3>
+                      <p className="text-xs text-gray-500">{model.desc}</p>
                     </div>
                   </DropdownMenuItem>
                 ))}
