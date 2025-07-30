@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import ChatInputBox from "./_components/ChatInputBox";
+import LibraryDisplay from "./_components/LibraryDisplay";
 
 export default function Home() {
   // Debug: Check environment variables
@@ -26,6 +27,7 @@ export default function Home() {
   return (
     <div className="flex-1 w-full">
       <ChatInputBox />
+      <LibraryDisplay />
     </div>
   );
 }
