@@ -1,6 +1,4 @@
 import { NextResponse } from 'next/server';
-import axios from 'axios';
-import * as cheerio from 'cheerio';
 
 export async function POST(request) {
   try {
@@ -10,11 +8,11 @@ export async function POST(request) {
       return NextResponse.json({ error: 'Query is required' }, { status: 400 });
     }
 
-    // Web search using DuckDuckGo (free, no API key needed)
-    const searchResults = await performWebSearch(query);
+    // Mock web search results
+    const searchResults = await performMockWebSearch(query);
     
-    // AI analysis using the selected model
-    const aiAnalysis = await performAIAnalysis(query, searchResults, type, model);
+    // Mock AI analysis
+    const aiAnalysis = await performMockAIAnalysis(query, searchResults, type, model);
 
     return NextResponse.json({
       success: true,
@@ -35,81 +33,54 @@ export async function POST(request) {
   }
 }
 
-async function performWebSearch(query) {
-  try {
-    // Using DuckDuckGo search (free, no API key)
-    const searchUrl = `https://duckduckgo.com/html/?q=${encodeURIComponent(query)}`;
-    
-    const response = await axios.get(searchUrl, {
-      headers: {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
-      }
-    });
+async function performMockWebSearch(query) {
+  // Mock search results
+  const mockResults = [
+    {
+      title: `Search results for: ${query}`,
+      url: `https://example.com/search?q=${encodeURIComponent(query)}`,
+      snippet: `This is a search result for "${query}". The search engine found relevant information about this topic.`,
+      source: 'Mock Search Engine'
+    },
+    {
+      title: `More information about ${query}`,
+      url: `https://wikipedia.org/wiki/${encodeURIComponent(query)}`,
+      snippet: `Additional information and resources related to "${query}". This could include articles, documentation, or other relevant content.`,
+      source: 'Mock Search Engine'
+    },
+    {
+      title: `Recent discussions about ${query}`,
+      url: `https://reddit.com/search?q=${encodeURIComponent(query)}`,
+      snippet: `Recent discussions and community content related to "${query}". This includes forum posts, social media mentions, and other user-generated content.`,
+      source: 'Mock Search Engine'
+    }
+  ];
 
-    const $ = cheerio.load(response.data);
-    const results = [];
-
-    // Extract search results
-    $('.result').each((index, element) => {
-      if (index < 10) { // Limit to 10 results
-        const title = $(element).find('.result__title').text().trim();
-        const link = $(element).find('.result__url').attr('href');
-        const snippet = $(element).find('.result__snippet').text().trim();
-        
-        if (title && link) {
-          results.push({
-            title,
-            url: link,
-            snippet,
-            source: 'DuckDuckGo'
-          });
-        }
-      }
-    });
-
-    return results;
-  } catch (error) {
-    console.error('Web search error:', error);
-    // Fallback to mock results
-    return [
-      {
-        title: `Search results for: ${query}`,
-        url: '#',
-        snippet: `This is a search result for "${query}". The actual web search is temporarily unavailable.`,
-        source: 'Mock Data'
-      }
-    ];
-  }
+  return mockResults;
 }
 
-async function performAIAnalysis(query, webResults, type, model) {
-  try {
-    // Using Hugging Face Inference API (free tier available)
-    // You'll need to get a free API key from: https://huggingface.co/settings/tokens
-    
-    // For now, we'll use a mock AI analysis
-    const analysis = {
-      summary: `AI analysis of "${query}": Based on the search results, this topic appears to be significant in current discussions. The analysis suggests multiple perspectives and potential areas for further research.`,
-      keyPoints: [
-        `Primary focus: ${query}`,
-        'Multiple sources available',
-        'Recent developments noted',
-        'Potential for deeper research'
-      ],
-      confidence: 0.85,
-      model: 'Mock AI Model',
-      type: type
-    };
+async function performMockAIAnalysis(query, webResults, type, model) {
+  // Mock AI analysis
+  const analysis = {
+    summary: `AI analysis of "${query}": Based on the search results, this topic appears to be significant in current discussions. The analysis suggests multiple perspectives and potential areas for further research.`,
+    keyPoints: [
+      `Primary focus: ${query}`,
+      'Multiple sources available',
+      'Recent developments noted',
+      'Potential for deeper research',
+      `Search type: ${type}`,
+      `AI model used: ${model}`
+    ],
+    confidence: 0.85,
+    model: model || 'Claude 3.5 Sonnet',
+    type: type || 'search',
+    recommendations: [
+      'Consider exploring related topics',
+      'Check for recent updates',
+      'Look into expert opinions',
+      'Review multiple sources'
+    ]
+  };
 
-    return analysis;
-  } catch (error) {
-    console.error('AI analysis error:', error);
-    return {
-      summary: `Analysis of "${query}" completed with basic processing.`,
-      keyPoints: ['Basic analysis performed', 'Web results processed'],
-      confidence: 0.7,
-      model: 'Fallback Model',
-      type: type
-    };
-  }
+  return analysis;
 } 
