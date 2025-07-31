@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 
 export async function POST(request) {
   try {
-    const { query, type, model } = await request.json();
+    const { query, type, model, userEmail } = await request.json();
 
     if (!query) {
       return NextResponse.json({ error: 'Query is required' }, { status: 400 });
@@ -13,6 +13,31 @@ export async function POST(request) {
     
     // Mock AI analysis
     const aiAnalysis = await performMockAIAnalysis(query, searchResults, type, model);
+
+    // Save to library if user is authenticated
+    if (userEmail) {
+      try {
+        const searchId = `search_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+        
+        await fetch(`${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/api/library/save`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            searchInput: query,
+            userEmail,
+            type,
+            searchId,
+            searchResults: { webResults: searchResults, aiAnalysis },
+            aiModel: model
+          })
+        });
+      } catch (libraryError) {
+        console.error('Failed to save to library:', libraryError);
+        // Don't fail the search if library save fails
+      }
+    }
 
     return NextResponse.json({
       success: true,

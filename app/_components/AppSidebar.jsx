@@ -46,9 +46,9 @@ function AppSidebar() {
         <Sidebar className='bg-accent'>
             <SidebarHeader className='bg-accent flex items-center py-5 px-4'>
                 {isCollapsed ? (
-                    <Image src={'/onlylogo.png'} alt="Saar AI Logo" width={40} height={40} />
+                    <Image src={'/logo.png'} alt="Saar AI Logo" width={40} height={40} />
                 ) : (
-                    <Image src={'/logo.png'} alt="Saar AI Logo" width={250} height={50} />
+                    <Image src={'/logoname.png'} alt="Saar AI Logo" width={250} height={50} />
                 )}
             </SidebarHeader>
             <SidebarContent className='bg-accent'>

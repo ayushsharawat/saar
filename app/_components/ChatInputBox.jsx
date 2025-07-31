@@ -118,13 +118,70 @@ export default function ChatInputBox() {
                 ))}
               </DropdownMenuContent>
             </DropdownMenu>
-            <Button variant={'ghost'}>
+            <Button 
+              variant={'ghost'} 
+              onClick={() => {
+                // Web search functionality
+                if (userSearchInput) {
+                  const encodedQuery = encodeURIComponent(userSearchInput);
+                  window.open(`https://www.google.com/search?q=${encodedQuery}`, '_blank');
+                }
+              }}
+              title="Search on Google"
+            >
               <Globe className={'text-gray-500 h-5 w-5'} />
             </Button>
-            <Button variant={'ghost'}>
+            <Button 
+              variant={'ghost'}
+              onClick={() => {
+                // File upload functionality
+                const input = document.createElement('input');
+                input.type = 'file';
+                input.accept = '.txt,.pdf,.doc,.docx,.csv';
+                input.onchange = (e) => {
+                  const file = e.target.files[0];
+                  if (file) {
+                    const reader = new FileReader();
+                    reader.onload = (event) => {
+                      setUserSearchInput(event.target.result);
+                    };
+                    reader.readAsText(file);
+                  }
+                };
+                input.click();
+              }}
+              title="Upload File"
+            >
               <Paperclip className={'text-gray-500 h-5 w-5'} />
             </Button>
-            <Button variant={'ghost'}>
+            <Button 
+              variant={'ghost'}
+              onClick={() => {
+                // Voice input functionality
+                if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+                  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+                  const recognition = new SpeechRecognition();
+                  recognition.continuous = false;
+                  recognition.interimResults = false;
+                  recognition.lang = 'en-US';
+                  
+                  recognition.onresult = (event) => {
+                    const transcript = event.results[0][0].transcript;
+                    setUserSearchInput(transcript);
+                  };
+                  
+                  recognition.onerror = (event) => {
+                    console.error('Speech recognition error:', event.error);
+                    alert('Speech recognition not available. Please type your query.');
+                  };
+                  
+                  recognition.start();
+                } else {
+                  alert('Speech recognition not supported in this browser. Please type your query.');
+                }
+              }}
+              title="Voice Input"
+            >
               <Mic className={'text-gray-500 h-5 w-5'} />
             </Button>
             <Button 
